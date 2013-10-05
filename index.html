@@ -14,30 +14,61 @@
     <style type="text/css">
       .map {
       width: 720px;
-      height: 480px;
+      height: 510px;
       margin: 0 0 1em 0;
       }
     </style>
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <meta http-equiv="Content-Type" content="text/html;
 					     charset=utf-8" />
     <title>Night and Day on Earth</title>
   </head>
   
   <body>
-    <div class="map" id="watercolor"></div>
-      <script type="text/javascript">
-        var southWest = new L.LatLng(-90, -270),
-        northEast = new L.LatLng(90, 270);
-        var base = new L.StamenTileLayer("watercolor");
-        var map = new L.Map("watercolor", {
-        center: new L.LatLng(0, 0),
-        worldCopyJump: true,
-        maxBounds: new L.LatLngBounds(southWest, northEast),
-        zoom: 1,
-        layers: [base]
-        });
-        L.terminator().addTo(map)
-      </script>
+    <div id="Navigation">
+      <ul>
+	<li><a href="http://www.usm.lmu.de/people/dietrich/">J&ouml;rg
+	Dietrich's other page</a></li>
+	<li class="sel">Leaflet.Terminator</li>
+	<li>
+	  <div id="Drop">
+	    <ul>
+	      <li><a href="https://github.com/joergdietrich/Leaflet.Terminator">
+		  Leaftlet.Terminator on GitHub</a>
+	      </li>
+	      <li class="sel">Leaflet.Terminator Example</li>
+	    </ul>
+	  </div>
+	</li>
+      </ul>
+    </div>
+    <div id="Content">
+      <h1>Night and Day on Earth</h1> 
+      <p>
+	Leaflet.Terminator is a simple plugin to
+	the <a href="http://leafletjs.com">leaflet</a> library to
+	overlay day and night regions on maps. You can get the source
+	code on
+	<a 
+	   href="https://github.com/joergdietrich/Leaflet.Terminator">
+	  github</a>.
+      </p>
+      
+      <div class="map" id="watercolor"></div>
+        <script type="text/javascript">
+          var southWest = new L.LatLng(-90, -270),
+          northEast = new L.LatLng(90, 270);
+          var base = new L.StamenTileLayer("watercolor");
+          var map = new L.Map("watercolor", {
+          center: new L.LatLng(0, 0),
+          worldCopyJump: true,
+          maxBounds: new L.LatLngBounds(southWest, northEast),
+          zoom: 1,
+          layers: [base]
+          });
+          L.terminator().addTo(map)
+        </script>
+    </div>
   </div>
 
   <div id="Footer">

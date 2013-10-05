@@ -1,0 +1,119 @@
+body {
+  color: black; background-color: #FFFFF0;
+  font-size: 100.01%;
+  margin: 0; padding: 1em;
+}
+
+div#Navigation {
+  font-size: 1em;
+  font-family: Helvetica,Arial,sans-serif;
+  float: left; width: 16em;
+  margin: 0 auto; padding: 0;
+  background-color: #eee;
+  color: #000
+}
+div#Navigation ul { 
+  margin: 0; 
+  padding: 0; 
+  border: 0; 
+  background: #eee;
+}
+div#Navigation a {
+  display: block;
+  font-weight: normal;
+}
+div#Navigation li {
+  list-style: none;
+  border-top: 1px solid #FFFFF0;
+}
+div#Navigation ul li.sel a { 
+  color: black;
+  background-color: #eee;
+  text-decoration: none;
+}
+div#Navigation ul li.sel a:hover { 
+  color: black;
+  background-color: #0ac;
+  text-decoration: none;
+}
+div#Navigation a:link {
+  color: #000; background-color: #0CF;
+  text-decoration: none;
+}
+div#Navigation a:visited {
+  color: #000; background-color: #0CF;
+  text-decoration: none;
+}
+div#Navigation a:hover {
+  color: black; background-color: #0AC;
+  text-decoration: none;
+}
+div#Navigation a:active {
+  color: black; background-color: #09A;
+  text-decoration: none;
+}
+
+div#Drop { 
+  color: black; background-color: #0FF; 
+  text-indent: 1em;
+}
+div#Drop a:link { 
+  color: black; background-color: #0FF;
+  text-decoration: none
+}
+div#Drop a:visited { 
+  color: black; background-color: #0FF;
+  text-decoration: none
+}
+div#Drop a:hover { 
+  color: black; background-color: #0cc;
+  text-decoration: none
+}
+div#Drop a:active { 
+  color: black; background-color: #eee;
+  text-decoration: none
+}
+
+
+
+
+div#Content {
+  font-family: Times-Roman,serif;
+  margin-left: 16em;
+  padding: 0 1em;
+  min-width: 16em; 
+  max-width: 45em;
+}
+div#Content h1 {
+  font-size: 1.8em;
+  margin: 0 0 1em;
+  font-weight: normal;
+  font-family: Helvetica,Arial,sans-serif;
+}
+div#Content h2 {
+  font-size: 1.5em;
+  margin: 0 0 1em;
+  font-family: Helvetica,Arial,sans-serif;
+}
+div#Content h3 {
+  font-size: 1.2em;
+  margin: 0 0 1em;
+  font-weight: normal;
+  font-family: Helvetica,Arial,sans-serif;
+}
+div#Content p {
+  font-size:1em;
+  margin: 1em 0;
+  text-align: justify;
+}
+
+div#Footer { 
+  min-width: 16em;
+  max-width: 62em; 
+}
+div#Footer p {
+  font-size: 0.9em;
+  text-align:right;
+  font-weight: normal;
+  font-family: Times-Roman,serif;
+}
