@@ -1,26 +1,32 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-	  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
   <head>
-    <meta http-equiv="Content-Type" content="text/html;
-      charset=utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <script type="text/javascript"
-    src="http://leaflet.cloudmade.com/dist/leaflet.js"></script>
+	    src="http://leaflet.cloudmade.com/dist/leaflet.js"></script>
     <link rel="stylesheet" href="http://leaflet.cloudmade.com/dist/leaflet.css" />
     <!--[if lte IE 8]><link rel="stylesheet" --><!--href="http://leaflet.cloudmade.com/dist/leaflet.ie.css" --><!--/><![endif]-->
     <script type="text/javascript"
-    src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
+	    src="http://maps.stamen.com/js/tile.stamen.js?v1.2.3"></script>
     <script type="text/javascript" src="L.Terminator.js"></script>
+    
+    <script type="text/javascript" src="js/shCore.js"></script>
+    <script type="text/javascript"
+    src="js/shBrushJScript.js"></script>
+    <script type="text/javascript" src="js/shBrushXml.js"></script>
+    
     <style type="text/css">
-      .map {
-      width: 720px;
-      height: 510px;
-      margin: 0 0 1em 0;
-      }
+     .map {
+       width: 720px;
+       height: 510px;
+       margin: 0 0 1em 0;
+     }
     </style>
-    <link rel="stylesheet" type="text/css" href="style.css" />
-    <meta http-equiv="Content-Type" content="text/html;
-					     charset=utf-8" />
+    
+    <link href="css/shCore.css" rel="stylesheet" type="text/css" />
+    <link href="css/shThemeDefault.css" rel="stylesheet" type="text/css" />
+    
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
     <title>Night and Day on Earth</title>
   </head>
   
@@ -28,13 +34,13 @@
     <div id="Navigation">
       <ul>
 	<li><a href="http://www.usm.lmu.de/people/dietrich/">J&ouml;rg
-	Dietrich's other page</a></li>
+	  Dietrich's other page</a></li>
 	<li class="sel">Leaflet.Terminator</li>
 	<li>
 	  <div id="Drop">
 	    <ul>
 	      <li><a href="https://github.com/joergdietrich/Leaflet.Terminator">
-		  Leaftlet.Terminator on GitHub</a>
+		Leaftlet.Terminator on GitHub</a>
 	      </li>
 	      <li class="sel">Leaflet.Terminator Example</li>
 	    </ul>
@@ -48,35 +54,118 @@
 	Leaflet.Terminator is a simple plug-in to
 	the <a href="http://leafletjs.com">Leaflet</a> library to
 	overlay day and night regions on maps. You can get the source
-	code on
-	<a 
-	   href="https://github.com/joergdietrich/Leaflet.Terminator">
-	  GitHub</a>.
+	code on <a
+	href="https://github.com/joergdietrich/Leaflet.Terminator">
+	GitHub</a>. The example below shows a continously updating
+	world map.
       </p>
       
       <div class="map" id="watercolor"></div>
-        <script type="text/javascript">
-          var southWest = new L.LatLng(-90, -270),
-          northEast = new L.LatLng(90, 270);
-          var base = new L.StamenTileLayer("watercolor");
-          var map = new L.Map("watercolor", {
+      <script type="text/javascript">
+        var southWest = new L.LatLng(-90, -270),
+        northEast = new L.LatLng(90, 270);
+        var base = new L.StamenTileLayer("watercolor");
+        var t = L.terminator();
+        var map = new L.Map("watercolor", {
           center: new L.LatLng(0, 0),
           worldCopyJump: true,
           maxBounds: new L.LatLngBounds(southWest, northEast),
           zoom: 1,
+          maxZoom: 10,
           layers: [base]
-          });
-          L.terminator().addTo(map)
-        </script>
-    </div>
-  </div>
+        });
+        t.addTo(map);
+        setInterval(function(){updateTerminator(t)}, 500);
+        function updateTerminator(t) {
+ 	 var t2 = L.terminator();
+ 	 t.setLatLngs(t2.getLatLngs());
+ 	 t.redraw();
+        }
+      </script>
+      <p>
+      To use Leaflet.Terminator, <a
+      href="https://raw.github.com/joergdietrich/Leaflet.Terminator/master/L.Terminator.js">download</a>
+      the javascript and load it from your html:
+      <pre class="brush: html">
+      <script type="text/javascript" src="L.Terminator.js"></script>
+      </pre>
+      Generate your Leaflet map us usual and then:
+      <pre class="brush: js">
+        L.terminator().addTo(map);
+      </pre>
+      </p>
+      <p>
+        The <code>L.terminator()</code> method returns a <a
+        href="http://leafletjs.com/reference.html#polygon">Polygon
+        object</a>,  which can be manipulated in the usual ways. For
+        example, the auto-updating map above uses the following code to
+        redraw the terminator every 0.5 seconds:
+	<pre class="brush: js; gutter: true; highlight: [3]">
+	  var t = L.terminator();
+	  t.addTo(map);
+	  setInterval(function(){updateTerminator(t)}, 500);
+	  function updateTerminator(t) {
+	    var t2 = L.terminator();
+	    t.setLatLngs(t2.getLatLngs());
+	    t.redraw();
+	  }</pre>
+      </p>
+      <p>
+        You can zoom in and watch the terminator move. However, the
+        equations used by Leaflet.Terminator are accurate only to a few
+        seconds to minimize computing time. More importantly, they 
+        ignore refraction, which changes the actual sun rise and set
+        times by several minutes. Also keep in mind that the exact times
+        depend on terrain &ndash; your altitude and your view to the
+        horizon.
+      </p>
+      <p>
+        Leaflet.Terminator computes the polygon from longitudes
+        -360&deg; to +360&deg;, i.e., twice around the Earth to allow
+        for some panning in world maps. Nevertheless, it is probably a
+        good idea to either use the <a
+        href="http://leafletjs.com/reference.html#map-worldcopyjump"><code>worldCopyJump</code></a>
+        or <a
+        href="http://leafletjs.com/reference.html#map-maxbounds"><code>maxBounds</code></a>
+        options when instantiating the map.
+      </p>
+      <p>
+        Leaflet.Terminator extends the <a
+        href="http://leafletjs.com/reference.html#polygon"><code>Polygon</code></a>
+        class and thus <code>L.terminator()</code> takes all <a
+        href="http://leafletjs.com/reference.html#polyline-options">Polyline
+        options</a>. In addition <code>L.terminator()</code>
+        understands the following options:
+        </p>
+        <table class="reference">
+	  <tr>
+	    <th>Option</th>
+	    <th>Type</th>
+	    <th>Default</th>
+	    <th>Description</th>
+	  </tr>
+	  <tr>
+	    <td><code>resolution</code></td>
+	    <td><code>Number</code></td>
+	    <td><code>2</code></td>
+	    <td>Polygon points are computed at fixed longitude
+	      points separated by <code>1&deg;/resolution.</code></td>
+	    </tr>
+	  </table>
 
-  <div id="Footer">
-    <hr />
-    <p>
-      <a href="mailto:astro@joergdietrich.com">J&ouml;rg Dietrich</a><br />
-      <!-- hhmts start --> Last modified: Thu Sep 26 12:10:34 MEST 2013 <!-- hhmts end -->
-    </p>
-  </div>
-</body>
+      <script type="text/javascript">
+      SyntaxHighlighter.defaults['gutter'] = false;
+      SyntaxHighlighter.defaults['toolbar'] = false;
+      SyntaxHighlighter.all()
+      </script>
+    </div>
+    
+    <div id="Footer">
+      <hr />
+      <p>
+        <a href="mailto:astro@joergdietrich.com">J&ouml;rg Dietrich</a><br />
+        <!-- hhmts start -->Last modified: Mon Oct  7 01:03:08 CEST 2013 <!-- hhmts end -->
+      </p>
+    </div>
+  </body>
 </html>

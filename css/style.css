@@ -106,6 +106,32 @@ div#Content p {
   margin: 1em 0;
   text-align: justify;
 }
+div#Content code { 
+  font-size:1.1em;
+  font-weight: normal;
+  font-family: monospace;
+  background-color: #fff;
+}
+
+table.reference{
+  border-collapse:collapse;width:100%;
+}
+
+table.reference th{
+  color:#000;background-color:#09c;border:1px solid #09c;font-size:1em;padding:3px;vertical-align:top;text-align:left;
+}
+
+table.reference th a:link,table.reference th a:visited{
+  color:#eeeeee;
+}
+
+table.reference th a:hover,table.reference th a:active{
+  color:#EE872A;
+}
+
+table.reference td{
+  border:1px solid #d4d4d4;padding:5px;padding-top:7px;padding-bottom:7px;vertical-align:top;
+}
 
 div#Footer { 
   min-width: 16em;
