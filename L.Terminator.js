@@ -30,7 +30,7 @@ L.Terminator = L.Polygon.extend({
 	this._R2D = 180 / Math.PI;
 	this._D2R = Math.PI / 180;
 	L.Util.setOptions(this, options);
-	var latLng = this._compute(null)
+	var latLng = this._compute(this.options.time || null)
 	this.setLatLngs(latLng);
     },
 
