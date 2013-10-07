@@ -22,7 +22,13 @@
        margin: 0 0 1em 0;
      }
     </style>
-    
+    <style type="text/css">
+     .map2 {
+       width: 720px;
+       height: 510px;
+       margin: 0 0 1em 0;
+     }
+    </style>
     <link href="css/shCore.css" rel="stylesheet" type="text/css" />
     <link href="css/shThemeDefault.css" rel="stylesheet" type="text/css" />
     
@@ -48,6 +54,7 @@
 	</li>
       </ul>
     </div>
+    
     <div id="Content">
       <h1>Night and Day on Earth</h1> 
       <p>
@@ -83,9 +90,10 @@
         }
       </script>
       <p>
-      To use Leaflet.Terminator, <a
-      href="https://raw.github.com/joergdietrich/Leaflet.Terminator/master/L.Terminator.js">download</a>
-      the javascript and load it from your html:
+        To use Leaflet.Terminator, <a
+        href="https://raw.github.com/joergdietrich/Leaflet.Terminator/master/L.Terminator.js">download</a>
+        the javascript and load it from your html:
+      </p>
       <pre class="brush: html">
       <script type="text/javascript" src="L.Terminator.js"></script>
       </pre>
@@ -93,14 +101,14 @@
       <pre class="brush: js">
         L.terminator().addTo(map);
       </pre>
-      </p>
       <p>
         The <code>L.terminator()</code> method returns a <a
         href="http://leafletjs.com/reference.html#polygon">Polygon
         object</a>,  which can be manipulated in the usual ways. For
         example, the auto-updating map above uses the following code to
         redraw the terminator every 0.5 seconds:
-	<pre class="brush: js; gutter: true; highlight: [3]">
+      </p>
+      <pre class="brush: js; gutter: true; highlight: [3]">
 	  var t = L.terminator();
 	  t.addTo(map);
 	  setInterval(function(){updateTerminator(t)}, 500);
@@ -109,7 +117,7 @@
 	    t.setLatLngs(t2.getLatLngs());
 	    t.redraw();
 	  }</pre>
-      </p>
+
       <p>
         You can zoom in and watch the terminator move. However, the
         equations used by Leaflet.Terminator are accurate only to a few
@@ -136,23 +144,65 @@
         href="http://leafletjs.com/reference.html#polyline-options">Polyline
         options</a>. In addition <code>L.terminator()</code>
         understands the following options:
-        </p>
-        <table class="reference">
-	  <tr>
-	    <th>Option</th>
-	    <th>Type</th>
-	    <th>Default</th>
-	    <th>Description</th>
-	  </tr>
-	  <tr>
-	    <td><code>resolution</code></td>
-	    <td><code>Number</code></td>
-	    <td><code>2</code></td>
-	    <td>Polygon points are computed at fixed longitude
-	      points separated by <code>1&deg;/resolution.</code></td>
-	    </tr>
-	  </table>
-
+      </p>
+      <table class="reference">
+	<tr>
+	  <th>Option</th>
+	  <th>Type</th>
+	  <th>Default</th>
+	  <th>Description</th>
+	</tr>
+	<tr>
+	  <td><code>resolution</code></td>
+	  <td><code>Number</code></td>
+	  <td><code>2</code></td>
+	  <td>
+	    Set the separation at which Polygon points are
+	    computed. Polygon points are located at fixed longitude
+	    points separated by <code>1&deg;/resolution.</code>
+	  </td>
+	</tr>
+	<tr>
+	  <td><code>time</code> </td>
+	  <td><code>value</code> 
+	    <br />
+	    <br />
+	    <code>dateString</code>
+	    <br />
+	    <br />
+	    <code>year, month, day [, hour, minute, second,
+	    millisecond]</code> 
+	  </td>
+	  <td><code>null</code></td>
+	  <td>Set the time for which the terminator is computed. The
+        default is the present time. Any expression understood by <a
+        href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date"><code>Date()</code></a>
+        and which evaluates to <code>true</code> can be used.
+        </td>
+	</tr>
+      </table>
+      <p>
+      The map below shows the terminator across northern Europe
+      shortly before summer solstice by calling
+      </p>
+      <pre class="brush: js">
+      L.terminator({time: "2013-06-20T21:00:00Z"});
+      </pre>
+    <div class="map2" id="fixed-terminator"></div>
+      <script type="text/javascript">
+        var southWest = new L.LatLng(-90, -270),
+        northEast = new L.LatLng(90, 270);
+        var base2 = new L.StamenTileLayer("toner-lite");
+        var map2 = new L.Map("fixed-terminator", {
+          center: new L.LatLng(65, 0),
+          worldCopyJump: true,
+          maxBounds: new L.LatLngBounds(southWest, northEast),
+          zoom: 3,
+          layers: [base2]
+        });
+      L.terminator({time: "2013-06-20T21:00:00Z"}).addTo(map2);
+      </script>
+      
       <script type="text/javascript">
       SyntaxHighlighter.defaults['gutter'] = false;
       SyntaxHighlighter.defaults['toolbar'] = false;
@@ -164,7 +214,7 @@
       <hr />
       <p>
         <a href="mailto:astro@joergdietrich.com">J&ouml;rg Dietrich</a><br />
-        <!-- hhmts start -->Last modified: Mon Oct  7 01:03:08 CEST 2013 <!-- hhmts end -->
+        <!-- hhmts start -->Last modified: Mon Oct  7 12:17:14 CEST 2013 <!-- hhmts end -->
       </p>
     </div>
   </body>
