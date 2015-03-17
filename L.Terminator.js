@@ -34,6 +34,12 @@ L.Terminator = L.Polygon.extend({
 	this.setLatLngs(latLng);
     },
 
+    setTime: function(date) {
+        this.options.time = date;
+        var latLng = this._compute(date || null)
+        this.setLatLngs(latLng);
+    },
+
     _sunEclipticPosition: function(julianDay) {
 	/* Compute the position of the Sun in ecliptic coordinates at
 	   julianDay.  Following
