@@ -2,17 +2,16 @@ import L from 'leaflet';
 
 /* Terminator.js -- Overlay day/night region on a Leaflet map */
 
-Date.prototype.getJulian = function() {
+function julian(date) {
   /* Calculate the present UTC Julian Date. Function is valid after
    * the beginning of the UNIX epoch 1970-01-01 and ignores leap
    * seconds. */
-  return (this / 86400000) + 2440587.5;
+  return (date / 86400000) + 2440587.5;
 }
 
-Date.prototype.getGMST = function() {
+function GMST(julianDay) {
   /* Calculate Greenwich Mean Sidereal Time according to 
      http://aa.usno.navy.mil/faq/docs/GAST.php */
-  var julianDay = this.getJulian();
   var d = julianDay - 2451545.0;
   // Low precision equation is good enough for our purposes.
   return (18.697374558 + 24.06570982441908 * d) % 24;
@@ -32,7 +31,7 @@ var Terminator = L.Polygon.extend({
     this._R2D = 180 / Math.PI;
     this._D2R = Math.PI / 180;
     L.Util.setOptions(this, options);
-    var latLng = this._compute(this.options.time || null)
+    var latLng = this._compute(this.options.time)
     this.setLatLngs(latLng);
   },
 
@@ -60,7 +59,7 @@ var Terminator = L.Polygon.extend({
     // distance from Sun in AU
     var R = 1.00014 - 0.01671 * Math.cos(g * this._D2R) -
       0.0014 * Math.cos(2 * g * this._D2R);
-    return {"lambda": lambda, "R": R};
+    return {lambda: lambda, R: R};
   },
 
   _eclipticObliquity: function(julianDay) {
@@ -91,7 +90,7 @@ var Terminator = L.Polygon.extend({
     var raQuadrant = Math.floor(alpha / 90) * 90;
     alpha = alpha + (lQuadrant - raQuadrant);
     
-    return {"alpha": alpha, "delta": delta};
+    return {alpha: alpha, delta: delta};
   },
 
   _hourAngle: function(lng, sunPos, gst) {
@@ -111,19 +110,17 @@ var Terminator = L.Polygon.extend({
 
   _compute: function(time) {
     var today = time ? new Date(time) : new Date();
-    var julianDay = today.getJulian(); 
-    var gst = today.getGMST();
+    var julianDay = julian(today); 
+    var gst = GMST(julianDay);
     var latLng = [];
-    var ha, lat;
     
     var sunEclPos = this._sunEclipticPosition(julianDay);
     var eclObliq = this._eclipticObliquity(julianDay);
     var sunEqPos = this._sunEquatorialPosition(sunEclPos.lambda, eclObliq);
     for (var i = 0; i <= 720 * this.options.resolution; i++) {
-      lng = -360 + i / this.options.resolution;
-      ha = this._hourAngle(lng, sunEqPos, gst);
-      lat = this._latitude(ha, sunEqPos);
-      latLng[i+1] = [lat, lng];
+      var lng = -360 + i / this.options.resolution;
+      var ha = this._hourAngle(lng, sunEqPos, gst);
+      latLng[i+1] = [this._latitude(ha, sunEqPos), lng];
     }
     if (sunEqPos.delta < 0) {
       latLng[0] = [90, -360];
@@ -140,4 +137,6 @@ L.terminator = function(options) {
   return new L.Terminator(options);
 };
 
-export default Terminator;
+export default function terminator(options) {
+  return new Terminator(options);
+};

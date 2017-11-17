@@ -2,7 +2,7 @@
   "name": "leaflet.terminator",
   "version": "1.0.0",
   "description": "Night and day regions on Earth",
-  "main": "L.Terminator.js",
+  "main": "index.js",
   "scripts": {
     "build": "rollup -c",
     "prepublish": "npm run build"
@@ -22,6 +22,10 @@
   },
   "homepage": "https://github.com/joergdietrich/Leaflet.Terminator#readme",
   "devDependencies": {
+    "leaflet": "^1.2.0",
     "rollup": "^0.51.7"
+  },
+  "peerDependencies": {
+    "leaflet": "^1.2.0"
   }
 }
