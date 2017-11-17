@@ -7,7 +7,18 @@ Demo: http://joergdietrich.github.io/Leaflet.Terminator/
 
 Leaflet.Terminator extends the Polygon class. Adding the terminator to a leaflet map is as easy as 
 
-    L.terminator().addTo(map)
+```js
+L.terminator().addTo(map)
+```
+
+With npm:
+
+```js
+import Terminator from 'leaflet.terminator';
+
+var map = L.map();
+Terminator().addTo(map);
+```
 
 In addition to all Polygon options, Leaflet.Terminator has a new
 option "resolution", which gives the step size at which the terminator
