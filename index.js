@@ -133,10 +133,6 @@ var Terminator = L.Polygon.extend({
   }
 });
 
-L.terminator = function(options) {
-  return new L.Terminator(options);
-};
-
 export default function terminator(options) {
   return new Terminator(options);
 };
