@@ -1,0 +1,31 @@
+{
+  "name": "@joergdietrich/leaflet.terminator",
+  "version": "1.0.0",
+  "description": "Night and day regions on Earth",
+  "main": "L.Terminator.js",
+  "scripts": {
+    "build": "rollup -c",
+    "prepare": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/joergdietrich/Leaflet.Terminator.git"
+  },
+  "keywords": [
+    "leaflet",
+    "terminator"
+  ],
+  "author": "Jörg Dietrich",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/joergdietrich/Leaflet.Terminator/issues"
+  },
+  "homepage": "https://github.com/joergdietrich/Leaflet.Terminator#readme",
+  "devDependencies": {
+    "leaflet": "^1.3.1",
+    "rollup": "^0.60.1"
+  },
+  "peerDependencies": {
+    "leaflet": "^1.2.0"
+  }
+}
