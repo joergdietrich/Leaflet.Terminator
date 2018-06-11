@@ -9,7 +9,7 @@ Leaflet.Terminator extends the Polygon class. Adding the terminator to a leaflet
 
 ```html
 <script src="https://unpkg.com/leaflet"></script>
-<script src="https://unpkg.com/leaflet.terminator"></script>
+<script src="https://unpkg.com/@joergdietrich/leaflet.terminator"></script>
 ```
 ```js
 var map = L.map('map').addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
@@ -20,7 +20,7 @@ Or with npm:
 
 ```js
 import L from 'leaflet';
-import terminator from 'leaflet.terminator';
+import terminator from '@joergdietrich/leaflet.terminator';
 
 var map = L.map('map').addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'))
 terminator().addTo(map);
