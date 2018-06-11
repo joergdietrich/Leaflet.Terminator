@@ -1,0 +1,22 @@
+<link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet"></script>
+<!-- could use soon: <script src="https://unpkg.com/leaflet.terminator"></script> -->
+<script src="L.Terminator.js"></script>
+<style>
+	#map {
+		position: absolute;
+		height: 100vh;
+		width: 100vw;
+		top: 0;
+		left: 0;
+	}
+</style>
+<div id="map"></div>
+
+<script>
+	// var map = L.map('map', { minZoom: 2, maxBounds: [[-85, -350], [85, 350]] }) // to avoid seeing terminator's end
+	var map = L.map('map') // 
+		.addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'))
+		.setView([0, 0], 1.5);
+	L.terminator().addTo(map)
+</script>
