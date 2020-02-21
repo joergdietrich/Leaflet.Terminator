@@ -28,7 +28,42 @@ terminator().addTo(map);
 
 
 In addition to all Polygon options, Leaflet.Terminator has a new
-option "resolution", which gives the step size at which the terminator
+option `resolution`, which gives the step size at which the terminator
 points are computed. The step size is 1°/resolution, i.e. higher
 resolution values have smaller step sizes and more points in the
 polygon. The default value is 2.
+
+
+You can pass the `time` option in the constructor or use the `setTime()`
+method to control the reference time and date for the terminator; the
+value can be anything accepted by the `Date()` constructor. By default,
+the current time will be used.
+
+In the same way, you can use the `setTime()` method without an argument
+to refresh the terminator to the current time. This can be done
+automatically, for example using a timer:
+
+```js
+var map = L.map('map').addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+var terminator = L.terminator().addTo(map);
+setInterval(function() {
+	terminator.setTime();
+}, 60000); // Every minute
+
+```
+
+If you don't like background timers running even when the page is
+inactive, you can also set the terminator to be refreshed only when the
+user interacts with the map:
+
+```js
+var map = L.map('map').addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+var terminator = L.terminator().addTo(map);
+map.addEventListener('zoomstart movestart popupopen', function(e) {
+	terminator.setTime();
+});
+```
+
+You can customize and complete this code by listing
+additional map interaction events, described in the Leaflet
+[documentation](https://leafletjs.com/reference-1.6.0.html#map-event).
