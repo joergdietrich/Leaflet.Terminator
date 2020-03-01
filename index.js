@@ -19,6 +19,7 @@ function GMST(julianDay) {
 
 var Terminator = L.Polygon.extend({
 	options: {
+		interactive: false, // Disable "clickable" mouse pointer
 		color: '#00',
 		opacity: 0.5,
 		fillColor: '#00',
