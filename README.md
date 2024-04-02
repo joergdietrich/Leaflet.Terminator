@@ -33,6 +33,13 @@ points are computed. The step size is 1°/resolution, i.e. higher
 resolution values have smaller step sizes and more points in the
 polygon. The default value is 2.
 
+Leaflet.Terminator computes the terminator from longitudes -360° to +360°
+(a range of 720°), covering the Earth twice. To limit the terminator
+longitude range, the `longitudeRange` option is available.
+
+```js
+var sunlightOverlay = L.terminator({resolution: 5, longitudeRange:360});
+```
 
 You can pass the `time` option in the constructor or use the `setTime()`
 method to control the reference time and date for the terminator; the
