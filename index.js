@@ -24,7 +24,8 @@ var Terminator = L.Polygon.extend({
 		opacity: 0.5,
 		fillColor: '#00',
 		fillOpacity: 0.5,
-		resolution: 2
+		resolution: 2,
+		longitudeRange: 720
 	},
 
 	initialize: function (options) {
@@ -118,17 +119,17 @@ var Terminator = L.Polygon.extend({
 		var sunEclPos = this._sunEclipticPosition(julianDay);
 		var eclObliq = this._eclipticObliquity(julianDay);
 		var sunEqPos = this._sunEquatorialPosition(sunEclPos.lambda, eclObliq);
-		for (var i = 0; i <= 720 * this.options.resolution; i++) {
-			var lng = -360 + i / this.options.resolution;
+		for (var i = 0; i <= this.options.longitudeRange * this.options.resolution; i++) {
+			var lng = -this.options.longitudeRange/2 + i / this.options.resolution;
 			var ha = this._hourAngle(lng, sunEqPos, gst);
 			latLng[i + 1] = [this._latitude(ha, sunEqPos), lng];
 		}
 		if (sunEqPos.delta < 0) {
-			latLng[0] = [90, -360];
-			latLng[latLng.length] = [90, 360];
+			latLng[0] = [90, -this.options.longitudeRange/2];
+			latLng[latLng.length] = [90, this.options.longitudeRange/2];
 		} else {
-			latLng[0] = [-90, -360];
-			latLng[latLng.length] = [-90, 360];
+			latLng[0] = [-90, -this.options.longitudeRange/2];
+			latLng[latLng.length] = [-90, this.options.longitudeRange/2];
 		}
 		return latLng;
 	}
