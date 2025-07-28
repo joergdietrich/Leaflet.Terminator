@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/joergdietrich/Leaflet.Terminator#readme",
   "devDependencies": {
+    "@types/leaflet": "^1.9.20",
     "leaflet": "^1.3.1",
     "rollup": "^0.60.1"
   },
