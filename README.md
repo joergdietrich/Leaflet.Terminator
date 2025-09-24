@@ -73,4 +73,4 @@ map.addEventListener('zoomstart movestart popupopen', function(e) {
 
 You can customize and complete this code by listing
 additional map interaction events, described in the Leaflet
-[documentation](https://leafletjs.com/reference-1.6.0.html#map-event).
+[documentation](https://leafletjs.com/reference.html#map-event).
