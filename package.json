@@ -1,6 +1,6 @@
 {
   "name": "@joergdietrich/leaflet.terminator",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Night and day regions on Earth",
   "main": "L.Terminator.js",
   "scripts": {
