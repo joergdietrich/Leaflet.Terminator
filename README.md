@@ -5,26 +5,42 @@ Overlay day and night regions on a Leaflet Earth map.
 
 Demo: http://joergdietrich.github.io/Leaflet.Terminator/
 
-Leaflet.Terminator extends the Polygon class. Adding the terminator to a leaflet map is as easy as 
+Leaflet.Terminator extends the Polygon class and works with Leaflet 1.9
+and Leaflet 2. Adding the terminator to a leaflet map is as easy as 
 
 ```html
-<script src="https://unpkg.com/leaflet"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/@joergdietrich/leaflet.terminator"></script>
 ```
 ```js
-var map = L.map('map').addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
+var map = L.map('map').addLayer(L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png'));
 L.terminator().addTo(map)
 ```
 
-Or with npm:
+With Leaflet 2, load `leaflet-global.js` instead of `leaflet.js` to keep
+using script tags and the global `L`:
+
+```html
+<script src="https://unpkg.com/leaflet@2.0.0-beta.5/dist/leaflet-global.js"></script>
+<script src="https://unpkg.com/@joergdietrich/leaflet.terminator"></script>
+```
+```js
+var map = new L.Map('map').addLayer(new L.TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png'));
+L.terminator().addTo(map)
+```
+
+Or as an ES module with npm (Leaflet 1.9 or 2):
 
 ```js
-import L from 'leaflet';
-import terminator from '@joergdietrich/leaflet.terminator';
+import * as L from 'leaflet';
+import {Terminator} from '@joergdietrich/leaflet.terminator';
 
-var map = L.map('map').addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'))
-terminator().addTo(map);
+var map = new L.Map('map').addLayer(new L.TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png'));
+new Terminator().addTo(map);
 ```
+
+The default export `terminator()` is a factory that does the same as
+`new Terminator()`.
 
 
 In addition to all Polygon options, Leaflet.Terminator has a new
@@ -66,7 +82,7 @@ user interacts with the map:
 ```js
 var map = L.map('map').addLayer(L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'));
 var terminator = L.terminator().addTo(map);
-map.addEventListener('zoomstart movestart popupopen', function(e) {
+map.on('zoomstart movestart popupopen', function(e) {
 	terminator.setTime();
 });
 ```

@@ -1,20 +1,6 @@
 import * as L from "leaflet";
 
 /**
- * Calculate the present UTC Julian Date
- * @param date - Date in milliseconds since Unix epoch
- * @returns Julian day number
- */
-export declare function julian(date: number): number;
-
-/**
- * Calculate Greenwich Mean Sidereal Time
- * @param julianDay - Julian day number
- * @returns GMST in hours (0-24)
- */
-export declare function GMST(julianDay: number): number;
-
-/**
  * Options for configuring the Terminator overlay
  */
 export interface TerminatorOptions extends L.PolylineOptions {
@@ -63,11 +49,11 @@ export interface SunEquatorialPosition {
  *
  * @example
  * ```typescript
- * import L from 'leaflet';
- * import terminator from 'terminator';
+ * import {LeafletMap} from 'leaflet';
+ * import {Terminator} from '@joergdietrich/leaflet.terminator';
  *
- * const map = L.map('map').setView([0, 0], 2);
- * const terminatorLayer = terminator({
+ * const map = new LeafletMap('map').setView([0, 0], 2);
+ * const terminatorLayer = new Terminator({
  *   color: '#ff0000',
  *   fillOpacity: 0.3,
  *   time: new Date()
@@ -86,7 +72,7 @@ export declare class Terminator extends L.Polygon {
   private readonly _D2R: number;
 
   /** Configuration options */
-  options: TerminatorOptions;
+  options: L.Polygon["options"] & TerminatorOptions;
 
   /**
    * Create a new Terminator instance
@@ -95,16 +81,10 @@ export declare class Terminator extends L.Polygon {
   constructor(options?: TerminatorOptions);
 
   /**
-   * Initialize the terminator with given options
-   * @param options - Configuration options
-   */
-  initialize(options?: TerminatorOptions): void;
-
-  /**
    * Update the terminator position for a specific time
-   * @param date - Date/time for which to calculate terminator position
+   * @param date - Date/time for which to calculate terminator position; the current time if omitted
    */
-  setTime(date: Date | string | number): void;
+  setTime(date?: Date | string | number): this;
 
   /**
    * Calculate the Sun's position in ecliptic coordinates
@@ -173,7 +153,7 @@ export declare class Terminator extends L.Polygon {
  *
  * @example
  * ```typescript
- * import terminator from 'terminator';
+ * import terminator from '@joergdietrich/leaflet.terminator';
  *
  * const nightOverlay = terminator({
  *   fillColor: '#000066',
