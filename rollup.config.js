@@ -1,9 +1,8 @@
 export default {
-	input: 'index.js',
+	input: 'global.js',
 	output: {
-		format: 'umd',
+		format: 'iife',
 		file: 'L.Terminator.js',
-		name: 'L.terminator',
 		globals: {
 			'leaflet': 'L'
 		}

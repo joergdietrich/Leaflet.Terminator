@@ -4,7 +4,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src=" https://unpkg.com/@joergdietrich/leaflet.terminator/L.Terminator.js"></script>
+    <script src="https://unpkg.com/@joergdietrich/leaflet.terminator/L.Terminator.js"></script>
     
     <script type="text/javascript" src="js/shCore.js"></script>
     <script type="text/javascript"
@@ -35,14 +35,12 @@
   <body>
     <div id="Navigation">
       <ul>
-	<li><a href="http://www.usm.lmu.de/people/dietrich/">J&ouml;rg
-	  Dietrich's other page</a></li>
 	<li class="sel">Leaflet.Terminator</li>
 	<li>
 	  <div id="Drop">
 	    <ul>
 	      <li><a href="https://github.com/joergdietrich/Leaflet.Terminator">
-		Leaftlet.Terminator on GitHub</a>
+		Leaflet.Terminator on GitHub</a>
 	      </li>
 	      <li class="sel">Leaflet.Terminator Example</li>
 	    </ul>
@@ -84,17 +82,30 @@
         }
       </script>
       <p>
-        To use Leaflet.Terminator, include
+        Leaflet.Terminator works with Leaflet 1.9 and Leaflet 2. To use
+        it, include
       </p>
       <pre class="brush: html">
-	<script src=" https://unpkg.com/@joergdietrich/leaflet.terminator/L.Terminator.js"></script>
+	&lt;script src="https://unpkg.com/@joergdietrich/leaflet.terminator/L.Terminator.js"&gt;&lt;/script&gt;
       </pre>
-      in your html. Alternatively, if you use npm, Leaflet.Terminator is
-      available
-      as <a href="https://www.npmjs.com/package/@joergdietrich/leaflet.terminator">@joergdietrich/leaflet.terminator</a>. 
-      Generate your Leaflet map as usual and then:
+      <p>
+        in your html after Leaflet itself. With Leaflet 2, load
+        Leaflet's <code>dist/leaflet-global.js</code> rather
+        than <code>dist/leaflet.js</code>, since only the former
+        defines the global <code>L</code>. Generate your Leaflet map
+        as usual and then:
+      </p>
       <pre class="brush: js">
         L.terminator().addTo(map);
+      </pre>
+      <p>
+        Alternatively, if you use npm, Leaflet.Terminator is available
+        as <a href="https://www.npmjs.com/package/@joergdietrich/leaflet.terminator">@joergdietrich/leaflet.terminator</a>,
+        an ES module that exports the <code>Terminator</code> class:
+      </p>
+      <pre class="brush: js">
+        import {Terminator} from '@joergdietrich/leaflet.terminator';
+        new Terminator().addTo(map);
       </pre>
       <p>
         The <code>L.terminator()</code> method returns a <a
@@ -134,7 +145,7 @@
         Leaflet.Terminator extends the <a
         href="http://leafletjs.com/reference.html#polygon"><code>Polygon</code></a>
         class and thus <code>L.terminator()</code> takes all <a
-        href="http://leafletjs.com/reference.html#polyline-options">Polyline
+        href="http://leafletjs.com/reference.html#polyline-option">Polyline
         options</a>. In addition <code>L.terminator()</code>
         understands the following options:
       </p>
@@ -156,21 +167,29 @@
 	  </td>
 	</tr>
 	<tr>
+	  <td><code>longitudeRange</code></td>
+	  <td><code>Number</code></td>
+	  <td><code>720</code></td>
+	  <td>
+	    Set the longitude range in degrees, centered on 0&deg;,
+	    over which the terminator is computed.
+	  </td>
+	</tr>
+	<tr>
 	  <td><code>time</code> </td>
-	  <td><code>value</code> 
+	  <td><code>Date</code>
 	    <br />
+	    <code>Number</code>
 	    <br />
-	    <code>dateString</code>
-	    <br />
-	    <br />
-	    <code>year, month, day [, hour, minute, second,
-	    millisecond]</code> 
+	    <code>String</code>
 	  </td>
 	  <td><code>null</code></td>
 	  <td>Set the time for which the terminator is computed. The
-        default is the present time. Any expression understood by <a
-        href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date"><code>Date()</code></a>
-        and which evaluates to <code>true</code> can be used.
+        default is the present time. Any single value accepted by <a
+        href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/Date"><code>new Date()</code></a>
+        can be used: a <code>Date</code>, milliseconds since
+        1970-01-01 UTC, or a date string. Values that evaluate
+        to <code>false</code> select the present time.
         </td>
 	</tr>
       </table>
@@ -198,7 +217,7 @@
       </script>
 
     <p>
-      Leaflet.Terminator modifies the default Path options as follows:
+      Leaflet.Terminator modifies the default Path and Polyline options as follows:
     </p>
     <table class="reference">
       <tr>
@@ -206,16 +225,28 @@
 	<th>Value</th>
       </tr>
       <tr>
+	<td><code>interactive</code></td>
+	<td><code>false</code></td>
+      </tr>
+      <tr>
 	<td><code>color</code></td>
-	<td><code>'#00'</code></td>
+	<td><code>'#000'</code></td>
+      </tr>
+      <tr>
+	<td><code>opacity</code></td>
+	<td><code>0.5</code></td>
       </tr>
       <tr>
 	<td><code>fillColor</code></td>
-	<td><code>'#00'</code></td>
+	<td><code>'#000'</code></td>
       </tr>
       <tr>
 	<td><code>fillOpacity</code></td>
 	<td><code>0.5</code></td>
+      </tr>
+      <tr>
+	<td><code>smoothFactor</code></td>
+	<td><code>1</code></td>
       </tr>
     </table>
       <script type="text/javascript">
@@ -229,7 +260,7 @@
       <hr />
       <p>
         <a href="mailto:astro@joergdietrich.com">J&ouml;rg Dietrich</a><br />
-        <!-- hhmts start -->Last modified: Wed Sep 24 21:14:57 CEST 2025 <!-- hhmts end -->
+        <!-- hhmts start -->Last modified: Mon Nov 23 17:48:02 CET 2026<!-- hhmts end -->
       </p>
     </div>
   </body>

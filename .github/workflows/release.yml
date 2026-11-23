@@ -1,0 +1,47 @@
+# Publishes to npm when a version tag (v1.2.3, v2.0.0-beta.1) is pushed.
+# Uses npm trusted publishing: no token, but the package must list this
+# repository and workflow as a trusted publisher on npmjs.com.
+
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Check tag matches package.json version
+        run: |
+          version=$(node -p "require('./package.json').version")
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "::error::Tag $GITHUB_REF_NAME does not match package.json version $version"
+            exit 1
+          fi
+
+      # prepare builds L.Terminator.js
+      - run: npm install
+
+      - run: npm test
+
+      # Prereleases go to the "next" dist-tag so they don't become "latest"
+      - name: Publish
+        run: |
+          if [[ "$GITHUB_REF_NAME" == *-* ]]; then
+            npm publish --access public --tag next
+          else
+            npm publish --access public
+          fi
