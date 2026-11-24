@@ -214,7 +214,7 @@
       </p>
       <pre class="brush: js">
 	[-0.833, -6, -12, -18].forEach(function(altitude) {
-	  L.terminator({sunAltitude: altitude, fillOpacity: 0.15, stroke: false}).addTo(map);
+	  L.terminator({sunAltitude: altitude, fillOpacity: 0.15}).addTo(map);
 	});
       </pre>
       <div class="map" id="twilight"></div>
@@ -228,7 +228,7 @@
 	    maxZoom: 20,
 	    attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://stamen.com/" target="_blank">Stamen Design</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>', }).addTo(map3);
 	[-0.833, -6, -12, -18].forEach(function(altitude) {
-	  L.terminator({sunAltitude: altitude, fillOpacity: 0.15, stroke: false}).addTo(map3);
+	  L.terminator({sunAltitude: altitude, fillOpacity: 0.15}).addTo(map3);
 	});
       </script>
       <p>
@@ -264,6 +264,10 @@
       </tr>
       <tr>
 	<td><code>interactive</code></td>
+	<td><code>false</code></td>
+      </tr>
+      <tr>
+	<td><code>stroke</code></td>
 	<td><code>false</code></td>
       </tr>
       <tr>

@@ -76,7 +76,7 @@ Stacking several layers with a low opacity gives a twilight gradient:
 
 ```js
 [-0.833, -6, -12, -18].forEach(function(altitude) {
-	L.terminator({sunAltitude: altitude, fillOpacity: 0.15, stroke: false}).addTo(map);
+	L.terminator({sunAltitude: altitude, fillOpacity: 0.15}).addTo(map);
 });
 ```
 

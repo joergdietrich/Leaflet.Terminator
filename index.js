@@ -196,6 +196,7 @@ if (L.version.startsWith('1.')) {
 
 Terminator.mergeOptions({
 	interactive: false, // Disable "clickable" mouse pointer
+	stroke: false, // Shade only; color and opacity apply if stroke is enabled
 	color: '#000',
 	opacity: 0.5,
 	fillColor: '#000',
