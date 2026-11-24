@@ -23,7 +23,10 @@ function check(L, terminator, label) {
 	assert.equal(t.options.interactive, false, `${label}: Path default overridden`);
 	assert.equal(t.options.smoothFactor, 1, `${label}: smoothFactor pinned`);
 	assert.equal(t.options.fillColor, '#000', `${label}: fillColor default`);
-	assert.equal(t.getLatLngs()[0].length, 360 * 2 + 3, `${label}: polygon computed`);
+	const ring = t.getLatLngs()[0];
+	const ends = [ring[0], ring.at(-1)].map(p => [p.lat, p.lng]);
+	assert.deepEqual(ends, [[-90, -180], [-90, 180]], `${label}: polygon closes through the pole`);
+	assert.ok(ring.every(p => Math.abs(p.lng) <= 180), `${label}: polygon spans longitudeRange`);
 	assert.ok(map.hasLayer(t), `${label}: added to map`);
 
 	const polygonDefaults = L.Polygon.defaultOptions ?? L.Polygon.prototype.options;
@@ -32,6 +35,14 @@ function check(L, terminator, label) {
 	const before = t.getLatLngs()[0][100].lat;
 	t.setTime('2013-12-21T09:00:00Z');
 	assert.notEqual(t.getLatLngs()[0][100].lat, before, `${label}: setTime recomputes`);
+
+	// Near an equinox, twilight shade is an island and golden-hour shade has a sunlit hole
+
+	t.setTime('2026-03-20T14:46:00Z');
+	t.setSunAltitude(-18);
+	assert.ok(t.getLatLngs().every(p => p.length === 1), `${label}: twilight islands`);
+	t.setSunAltitude(6);
+	assert.ok(t.getLatLngs()[0].length > 1, `${label}: golden-hour hole`);
 
 	console.log(`ok  ${label} (Leaflet ${L.version})`);
 }
