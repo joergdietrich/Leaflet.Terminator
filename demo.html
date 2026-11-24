@@ -25,5 +25,10 @@
 		maxZoom: 19,
 		attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 	}).addTo(map);
-	new Terminator().addTo(map);
+
+	// Sunrise/sunset plus civil, nautical and astronomical twilight
+
+	for (const sunAltitude of [-0.833, -6, -12, -18]) {
+		new Terminator({sunAltitude, fillOpacity: 0.15, stroke: false}).addTo(map);
+	}
 </script>

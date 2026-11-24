@@ -57,6 +57,31 @@ longitude range, the `longitudeRange` option is available.
 var sunlightOverlay = L.terminator({resolution: 5, longitudeRange:360});
 ```
 
+The `sunAltitude` option sets the Sun's altitude in degrees below which
+the map is shaded. The default is -0.833°, the standard definition of
+sunrise and sunset, which accounts for atmospheric refraction and the
+Sun's upper limb. Set it to 0 for the purely geometric terminator that
+earlier versions drew.
+
+| Boundary | `sunAltitude` |
+|---|---|
+| Golden hour | 6 |
+| Geometric terminator | 0 |
+| Sunrise/sunset | -0.833 (default) |
+| Civil twilight | -6 |
+| Nautical twilight | -12 |
+| Astronomical twilight | -18 |
+
+Stacking several layers with a low opacity gives a twilight gradient:
+
+```js
+[-0.833, -6, -12, -18].forEach(function(altitude) {
+	L.terminator({sunAltitude: altitude, fillOpacity: 0.15, stroke: false}).addTo(map);
+});
+```
+
+`setSunAltitude()` changes the altitude of an existing layer.
+
 You can pass the `time` option in the constructor or use the `setTime()`
 method to control the reference time and date for the terminator; the
 value can be anything accepted by the `Date()` constructor. By default,
