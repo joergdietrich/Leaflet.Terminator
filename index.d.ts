@@ -22,6 +22,14 @@ export interface TerminatorOptions extends L.PolylineOptions {
    * If not provided, uses current time
    */
   time?: Date | string | number;
+
+  /**
+   * Sun altitude in degrees below which the map is shaded, e.g. 0 for
+   * the geometric terminator, -6/-12/-18 for civil/nautical/astronomical
+   * twilight, +6 for golden hour
+   * @default -0.833 (sunrise/sunset, including refraction)
+   */
+  sunAltitude?: number;
 }
 
 /**
@@ -87,6 +95,12 @@ export declare class Terminator extends L.Polygon {
   setTime(date?: Date | string | number): this;
 
   /**
+   * Change the sun altitude below which the map is shaded
+   * @param altitude - Sun altitude in degrees
+   */
+  setSunAltitude(altitude: number): this;
+
+  /**
    * Calculate the Sun's position in ecliptic coordinates
    * @param julianDay - Julian day number
    * @returns Sun's ecliptic position
@@ -115,35 +129,46 @@ export declare class Terminator extends L.Polygon {
   ): SunEquatorialPosition;
 
   /**
-   * Calculate the hour angle of the Sun for a given longitude
-   * @param lng - Longitude in degrees
-   * @param sunPos - Sun's equatorial position
-   * @param gst - Greenwich Sidereal Time in hours
-   * @returns Hour angle in degrees
+   * Trace a circle of given angular radius around a center point
+   * @param center - [latitude, longitude] in degrees
+   * @param radius - Angular radius in degrees
+   * @returns Ring of [latitude, longitude] pairs with unwrapped longitudes
    * @private
    */
-  private _hourAngle(
-    lng: number,
-    sunPos: SunEquatorialPosition,
-    gst: number
-  ): number;
+  private _shadowEdge(center: [number, number], radius: number): [number, number][];
 
   /**
-   * Calculate latitude of terminator for given hour angle and sun position
-   * @param ha - Hour angle in degrees
-   * @param sunPos - Sun's equatorial position
-   * @returns Latitude in degrees
+   * Copy a closed ring at every 360° shift that overlaps [lo, hi]
    * @private
    */
-  private _latitude(ha: number, sunPos: SunEquatorialPosition): number;
+  private _tile(ring: [number, number][], lo: number, hi: number): [number, number][][];
 
   /**
-   * Compute the terminator coordinates for the given time
+   * Turn a ring that circles a pole into an edge across [lo, hi], closed through the pole
+   * @private
+   */
+  private _wrapToPole(
+    ring: [number, number][],
+    pole: number,
+    lo: number,
+    hi: number
+  ): [number, number][];
+
+  /**
+   * Interpolate latitude at a longitude along points sorted by longitude
+   * @private
+   */
+  private _latAt(points: [number, number][], lng: number): number;
+
+  /**
+   * Compute the shaded region for the given time
    * @param time - Time for calculation (optional)
-   * @returns Array of [latitude, longitude] coordinate pairs
+   * @returns A ring, rings, or a ring with holes, depending on which poles are shaded
    * @private
    */
-  private _compute(time?: Date | string | number): L.LatLngExpression[];
+  private _compute(
+    time?: Date | string | number
+  ): L.LatLngExpression[] | L.LatLngExpression[][] | L.LatLngExpression[][][];
 }
 
 /**

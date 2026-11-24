@@ -20,7 +20,7 @@ function GMST(julianDay) {
 export class Terminator extends L.Polygon {
 	constructor(options) {
 		super([], options);
-		this.version = '2.0.0';
+		this.version = '2.1.0';
 		this._R2D = 180 / Math.PI;
 		this._D2R = Math.PI / 180;
 		this.setLatLngs(this._compute(this.options.time));
@@ -29,6 +29,11 @@ export class Terminator extends L.Polygon {
 	setTime(date) {
 		this.options.time = date;
 		return this.setLatLngs(this._compute(date));
+	}
+
+	setSunAltitude(altitude) {
+		this.options.sunAltitude = altitude;
+		return this.setLatLngs(this._compute(this.options.time));
 	}
 
 	_sunEclipticPosition(julianDay) {
@@ -83,43 +88,104 @@ export class Terminator extends L.Polygon {
 		return {alpha: alpha, delta: delta};
 	}
 
-	_hourAngle(lng, sunPos, gst) {
-		/* Compute the hour angle of the sun for a longitude on
-		 * Earth. Return the hour angle in degrees. */
-		var lst = gst + lng / 15;
-		return lst * 15 - sunPos.alpha;
-	}
-
-	_latitude(ha, sunPos) {
-		/* For a given hour angle and sun position, compute the
-		 * latitude of the terminator in degrees. */
-		var lat = Math.atan(-Math.cos(ha * this._D2R) /
-			Math.tan(sunPos.delta * this._D2R)) * this._R2D;
-		return lat;
+	_shadowEdge(center, radius) {
+		/* Trace the circle of angular radius `radius` around `center`
+		 * ([lat, lng], degrees). Longitudes are unwrapped, so they
+		 * change continuously along the ring. */
+		var lat0 = center[0] * this._D2R;
+		var rho = radius * this._D2R;
+		var n = Math.round(360 * this.options.resolution);
+		var ring = [];
+		for (var i = 0; i < n; i++) {
+			var theta = 2 * Math.PI * i / n;
+			var lat = Math.asin(Math.sin(lat0) * Math.cos(rho) +
+				Math.cos(lat0) * Math.sin(rho) * Math.cos(theta));
+			var dLng = Math.atan2(Math.sin(theta) * Math.sin(rho) * Math.cos(lat0),
+				Math.cos(rho) - Math.sin(lat0) * Math.sin(lat)) * this._R2D;
+			var lng = center[1] + dLng;
+			if (i > 0) {
+				lng += Math.round((ring[i - 1][1] - lng) / 360) * 360;
+			}
+			ring.push([lat * this._R2D, lng]);
+		}
+		return ring;
 	}
 
 	_compute(time) {
 		var today = time ? new Date(time) : new Date();
 		var julianDay = julian(today);
 		var gst = GMST(julianDay);
-		var latLng = [];
 
 		var sunEclPos = this._sunEclipticPosition(julianDay);
 		var eclObliq = this._eclipticObliquity(julianDay);
 		var sunEqPos = this._sunEquatorialPosition(sunEclPos.lambda, eclObliq);
-		for (var i = 0; i <= this.options.longitudeRange * this.options.resolution; i++) {
-			var lng = -this.options.longitudeRange/2 + i / this.options.resolution;
-			var ha = this._hourAngle(lng, sunEqPos, gst);
-			latLng[i + 1] = [this._latitude(ha, sunEqPos), lng];
+
+		// Shade is the cap where the Sun is below sunAltitude: radius
+		// 90° + sunAltitude around the antisolar point
+
+		var h = this.options.sunAltitude;
+		var delta = sunEqPos.delta;
+		var antisolarLng = ((sunEqPos.alpha - 15 * gst + 180) % 360 + 540) % 360 - 180;
+		var ring = this._shadowEdge([-delta, antisolarLng], 90 + h);
+
+		var lo = -this.options.longitudeRange / 2;
+		var hi = this.options.longitudeRange / 2;
+		var hasNorth = delta < h;
+		var hasSouth = delta > -h;
+
+		if (hasNorth !== hasSouth) {
+			return this._wrapToPole(ring, hasNorth ? 90 : -90, lo, hi);
 		}
-		if (sunEqPos.delta < 0) {
-			latLng[0] = [90, -this.options.longitudeRange/2];
-			latLng[latLng.length] = [90, this.options.longitudeRange/2];
-		} else {
-			latLng[0] = [-90, -this.options.longitudeRange/2];
-			latLng[latLng.length] = [-90, this.options.longitudeRange/2];
+
+		var rings = this._tile(ring, lo, hi);
+		if (!hasNorth) {
+			return rings.map(function (r) { return [r]; });
 		}
+
+		// Both poles are shaded: the sunlit island is a hole in a
+		// rectangle wide enough to contain every copy of it
+
+		var lngs = [].concat.apply([], rings).map(function (p) { return p[1]; });
+		var west = Math.min(lo, Math.min.apply(null, lngs));
+		var east = Math.max(hi, Math.max.apply(null, lngs));
+		return [[[-90, west], [90, west], [90, east], [-90, east]]].concat(rings);
+	}
+
+	_tile(ring, lo, hi) {
+		/* Copy a closed ring at every 360° shift that overlaps [lo, hi]. */
+		var lngs = ring.map(function (p) { return p[1]; });
+		var min = Math.min.apply(null, lngs);
+		var max = Math.max.apply(null, lngs);
+		var rings = [];
+		for (var k = Math.ceil((lo - max) / 360); k <= Math.floor((hi - min) / 360); k++) {
+			rings.push(ring.map(function (p) { return [p[0], p[1] + 360 * k]; }));
+		}
+		return rings;
+	}
+
+	_wrapToPole(ring, pole, lo, hi) {
+		/* Turn a ring that circles a pole into one edge spanning
+		 * [lo, hi], closed through that pole. */
+		var edge = ring.slice().sort(function (a, b) { return a[1] - b[1]; });
+		var first = edge[0][1];
+		var points = [];
+		for (var k = Math.floor((lo - first) / 360) - 1; first + 360 * k <= hi + 360; k++) {
+			edge.forEach(function (p) { points.push([p[0], p[1] + 360 * k]); });
+		}
+
+		var latLng = [[pole, lo], [this._latAt(points, lo), lo]];
+		points.forEach(function (p) {
+			if (p[1] > lo && p[1] < hi) { latLng.push(p); }
+		});
+		latLng.push([this._latAt(points, hi), hi], [pole, hi]);
 		return latLng;
+	}
+
+	_latAt(points, lng) {
+		/* Interpolate latitude at lng along points sorted by longitude. */
+		var i = points.findIndex(function (p) { return p[1] >= lng; });
+		var a = points[i - 1], b = points[i];
+		return a[0] + (b[0] - a[0]) * (lng - a[1]) / (b[1] - a[1]);
 	}
 }
 
@@ -130,13 +196,15 @@ if (L.version.startsWith('1.')) {
 
 Terminator.mergeOptions({
 	interactive: false, // Disable "clickable" mouse pointer
+	stroke: false, // Shade only; color and opacity apply if stroke is enabled
 	color: '#000',
 	opacity: 0.5,
 	fillColor: '#000',
 	fillOpacity: 0.5,
 	smoothFactor: 1, // Leaflet 2 lowered the default to 0.5
 	resolution: 2,
-	longitudeRange: 720
+	longitudeRange: 720,
+	sunAltitude: -0.833 // Sunrise/sunset: refraction plus the Sun's upper limb
 });
 
 export default function terminator(options) {
