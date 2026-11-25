@@ -115,3 +115,35 @@ map.on('zoomstart movestart popupopen', function(e) {
 You can customize and complete this code by listing
 additional map interaction events, described in the Leaflet
 [documentation](https://leafletjs.com/reference.html#map-event).
+
+Using with react-leaflet
+------------------------
+
+A small wrapper turns the terminator into a
+[react-leaflet](https://react-leaflet.js.org/) component:
+
+```jsx
+import {createPathComponent} from '@react-leaflet/core';
+import {Terminator as LTerminator} from '@joergdietrich/leaflet.terminator';
+
+export const Terminator = createPathComponent(
+	(props, ctx) => ({instance: new LTerminator(props), context: ctx}),
+	(instance, props, prev) => {
+		if (props.time !== prev.time) instance.setTime(props.time);
+		if (props.sunAltitude !== prev.sunAltitude) instance.setSunAltitude(props.sunAltitude);
+	}
+);
+```
+
+```jsx
+<MapContainer center={[0, 0]} zoom={2}>
+	<Terminator time={time} sunAltitude={-6} pathOptions={{fillOpacity: 0.3}} />
+</MapContainer>
+```
+
+As with react-leaflet's own `<Polygon>`, styles go in `pathOptions`.
+Changing `time` or `sunAltitude` updates the layer in place. Pass a new
+`time` value, such as a `Date` held in state, to move the terminator.
+`resolution` and `longitudeRange` are read once at creation, so change
+the component's `key` to rebuild it with new values. react-leaflet 5
+requires Leaflet 1.9.
